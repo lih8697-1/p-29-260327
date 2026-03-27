@@ -1,5 +1,6 @@
 package com.back.domain.post.member.controller;
 
+import com.back.domain.member.controller.ApiV1MemberController;
 import com.back.domain.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
