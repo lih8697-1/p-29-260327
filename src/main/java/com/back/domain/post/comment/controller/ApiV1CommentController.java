@@ -1,10 +1,10 @@
-package com.back.domain.comment.controller;
+package com.back.domain.post.comment.controller;
 
-import com.back.domain.comment.dto.CommentDto;
-import com.back.domain.comment.entity.Comment;
-import com.back.domain.entity.Post;
 import com.back.domain.member.entity.Member;
-import com.back.domain.service.PostService;
+import com.back.domain.post.comment.dto.CommentDto;
+import com.back.domain.post.comment.entity.Comment;
+import com.back.domain.post.post.entity.Post;
+import com.back.domain.post.post.service.PostService;
 import com.back.global.rq.Rq;
 import com.back.global.rsData.RsData;
 import io.swagger.v3.oas.annotations.Operation;

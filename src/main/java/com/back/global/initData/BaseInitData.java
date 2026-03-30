@@ -2,8 +2,8 @@ package com.back.global.initData;
 
 import com.back.domain.member.entity.Member;
 import com.back.domain.member.service.MemberService;
-import com.back.domain.entity.Post;
-import com.back.domain.service.PostService;
+import com.back.domain.post.post.entity.Post;
+import com.back.domain.post.post.service.PostService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
