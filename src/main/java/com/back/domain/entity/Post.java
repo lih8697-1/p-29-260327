@@ -1,7 +1,7 @@
-package com.back.domain.post.post.entity;
+package com.back.domain.entity;
 
 import com.back.domain.member.entity.Member;
-import com.back.domain.post.comment.entity.Comment;
+import com.back.domain.comment.entity.Comment;
 import com.back.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,9 @@
 package com.back.domain.post.post.controller;
 
-import com.back.domain.post.post.entity.Post;
-import com.back.domain.post.post.repository.PostRepository;
-import com.back.domain.post.post.service.PostService;
+import com.back.domain.controller.ApiV1PostController;
+import com.back.domain.entity.Post;
+import com.back.domain.repository.PostRepository;
+import com.back.domain.service.PostService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
