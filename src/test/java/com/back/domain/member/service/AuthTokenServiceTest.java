@@ -3,6 +3,7 @@ package com.back.domain.member.service;
 import com.back.domain.member.entity.Member;
 import com.back.domain.member.repository.MemberRepository;
 import com.back.standard.ut.Ut;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.DisplayName;
@@ -44,19 +45,33 @@ public class AuthTokenServiceTest {
         // 토큰 만료기간: 1년
         long expireMillis = 1000L * 60 * 60 * 24 * 365;
 
-        byte[] keyBytes = "abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890".getBytes(StandardCharsets.UTF_8);
+        byte[] keyBytes = "abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz1234567890"
+                .getBytes(StandardCharsets.UTF_8);
         SecretKey secretKey = Keys.hmacShaKeyFor(keyBytes);
 
         // 발행 시간과 만료 시간 설정
         Date issuedAt = new Date();
         Date expiration = new Date(issuedAt.getTime() + expireMillis);
 
+        Map<String, Object> payload = Map.of("name", "Paul", "age", 23);
+
         String jwt = Jwts.builder()
-                .claims(Map.of("name", "Paul", "age", 23)) // 내용
+                .claims(payload) // 내용
                 .issuedAt(issuedAt) // 생성날짜
                 .expiration(expiration) // 만료날짜
                 .signWith(secretKey) // 키 서명
                 .compact();
+
+        // jwt 확인(파싱)
+        Claims parsedPayload = Jwts
+                .parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(jwt)
+                .getPayload();
+
+        assertThat(parsedPayload.get("name", String.class)).isEqualTo("Paul");
+        assertThat(parsedPayload.get("age", Integer.class)).isEqualTo(23);
 
         assertThat(jwt).isNotBlank();
 
