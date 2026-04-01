@@ -22,7 +22,7 @@ public class Ut {
 
             Claims claims = claimsBuilder.build();
 
-            Date issuedAt = new Date(); // 발급 날짜(현재 시간)
+            Date issuedAt = new Date();
             Date expiration = new Date(issuedAt.getTime() + 1000L * expireSeconds);
 
             Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
@@ -56,16 +56,20 @@ public class Ut {
             }
         }
 
-        public static Map<String, Object> payload(String jwt, String secret) {
+        public static Map<String, Object> payloadOrNull(String jwt, String secret) {
             byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
             SecretKey secretKey = Keys.hmacShaKeyFor(keyBytes);
 
-            return (Map<String, Object>)Jwts
-                    .parser()
-                    .verifyWith(secretKey)
-                    .build()
-                    .parse(jwt)
-                    .getPayload();
+            if(isValid(jwt, secret)) {
+                return (Map<String, Object>)Jwts
+                        .parser()
+                        .verifyWith(secretKey)
+                        .build()
+                        .parse(jwt)
+                        .getPayload();
+            }
+
+            return null;
         }
     }
 }
