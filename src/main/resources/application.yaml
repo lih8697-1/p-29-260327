@@ -35,6 +35,15 @@ logging:
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
     org.springframework.transaction.interceptor: TRACE
+    com.back: INFO
+#  레벨명	숫자	설명
+#  TRACE	 0	    가장 상세한 로그, 디버깅용
+#  DEBUG	 1	    개발/디버깅용, 상세 정보
+#  INFO	     2	    디폴트, 일반적인 정보, 서비스 상태
+#  WARN	     3	    경고, 문제 가능성 있음
+#  ERROR	 4	    에러, 예외 발생
+#  FATAL	 5	    치명적 에러, 시스템 중단 가능
+
 
 # 사용자 정의 설정 변수
 custom:
