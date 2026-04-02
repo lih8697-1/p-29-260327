@@ -65,7 +65,7 @@ public class ApiV1MemberController {
                 () -> new ServiceException("401-1", "존재하지 않는 아이디입니다.")
         );
 
-        if (!actor.getPassword().equals(reqBody.password)){
+        if (!actor.getPassword().equals(reqBody.password)) {
             throw new ServiceException("401-2", "비밀번호가 일치하지 않습니다.");
         }
 
@@ -98,8 +98,13 @@ public class ApiV1MemberController {
     @GetMapping("/me")
     public MemberDto me() {
 
-        Member actor = rq.getActor();
-        return new MemberDto(actor);
+        // 인증
+        Member tmpActor = rq.getActor(); // DB 조회 X
+
+        // 내 전체 회원 정보 조회가 목적
+        Member realActor = memberService.findById(tmpActor.getId()).get();
+
+        return new MemberDto(realActor);
 
     }
 }
