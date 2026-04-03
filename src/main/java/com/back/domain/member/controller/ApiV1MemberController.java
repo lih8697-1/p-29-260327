@@ -97,7 +97,10 @@ public class ApiV1MemberController {
     public MemberDto me() {
 
         // 인증
-        Member tmpActor = rq.getActor(); // DB 조회 X
+//        Member tmpActor = rq.getActor(); // DB 조회 X
+
+        // 인증 작업이 없다
+        Member tmpActor = rq.getActor(); // user1 정보
 
         // 내 전체 회원 정보 조회가 목적
         Member realActor = memberService.findById(tmpActor.getId()).get();
