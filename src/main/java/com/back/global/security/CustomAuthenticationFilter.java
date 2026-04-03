@@ -9,6 +9,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,12 +25,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
 
-    private final Rq rq;
     private final MemberService memberService;
+    private final Rq rq;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        logger.info("CustomAuthenticationFilter is called");
+        logger.debug("CustomAuthenticationFilter is called");
 
         if(!request.getRequestURI().startsWith("/api/")) {
             filterChain.doFilter(request, response);
@@ -37,17 +42,18 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String authorizationHeader = rq.getHeader("Authorization", "");
-
         String apiKey;
         String accessToken;
+
+        String authorizationHeader = rq.getHeader("Authorization", "");
+
         if (!authorizationHeader.isBlank()) {
             // 헤더 방식
             if (!authorizationHeader.startsWith("Bearer ")) {
                 throw new ServiceException("401-2", "잘못된 형식의 인증데이터입니다.");
             }
 
-            String[] headerAuthorizationBits = authorizationHeader.split(" ", 3);
+            String[] headerAuthorizationBits = authorizationHeader.split(" ", 3);            apiKey = authorizationHeader.replace("Bearer ", "");
 
             apiKey = headerAuthorizationBits[1];
             accessToken = headerAuthorizationBits.length == 3 ? headerAuthorizationBits[2] : "";
@@ -77,11 +83,11 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // accessToken으로 인증이 제대로 이뤄지지 않은 경우
+        // accessToken으로 인증이 제대로 이루어지지 않은 경우
         if (member == null) {
             member = memberService
                     .findByApiKey(apiKey)
-                    .orElseThrow(() -> new ServiceException("401-4", "apiKey가 유효하지 않습니다."));
+                    .orElseThrow(() -> new ServiceException("401-4", "API 키가 유효하지 않습니다."));
         }
 
         if (isAccessTokenExists && !isAccessTokenValid) {
@@ -90,8 +96,24 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             rq.setHeader("accessToken", newAccessToken);
         }
 
-        // SecurityContextHolder에 인증 데이터 저장
+        // SecurityContextHolder에 인증데이터 저장
+        UserDetails user = new User(
+                member.getUsername(),
+                member.getPassword(),
+                List.of()
+        );
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                user,
+                null,
+                user.getAuthorities()
+        );
+
+        SecurityContextHolder
+                .getContext()
+                .setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
+
 }
